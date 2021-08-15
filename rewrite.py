@@ -15,9 +15,9 @@ async def on_ready():
 @bot.command(name='neofetch')
 async def neofetch(ctx):
     await ctx.send("```please wait for 5 seconds, processing your input```")
-    x = subprocess.Popen('neofetch --stdout > /home/aryan/text.txt', stdout=subprocess.PIPE, shell=True)
+    x = subprocess.Popen('neofetch --stdout > /path/to/the/text/file/where/you/want/output/to/be/stored', stdout=subprocess.PIPE, shell=True)
     time.sleep(5)
-    file = open ("/home/aryan/text.txt", "r")
+    file = open ("/path/to/the/text/file/where/you/want/output/to/be/stored", "r")
     output = ""
     for line in file.readlines():
         output += line
