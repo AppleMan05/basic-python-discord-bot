@@ -39,4 +39,4 @@ async def google(ctx, *, query):
            continue
         embed.add_field(name="Result", value=j )
     await ctx.send(content=None, embed=embed)
-bot.run("ODc1MDM2MTExNTQwNDY1Njk0.YRPq4g.R1wMnJM8hNRW5iT2vY9lm52u3E4")
+bot.run("")
