@@ -43,4 +43,4 @@ async def _weather(ctx, city:str):
 #        embed.add_field(name=forecast.date, value=f'{forecast.sky_text}, {forecast.temperature}', inline=True)
     await ctx.send(content=None, embed=embed)
     await weather_client.close()
-client.run("OTEyMjIyMzMzMDQ4MDY2MDg4.YZszQA.WzK5ezhA9YYvRUn2oLPn079Xj7Q")
+client.run("")
