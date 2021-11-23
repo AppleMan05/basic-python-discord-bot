@@ -2,11 +2,16 @@ import discord
 from discord_slash import SlashCommand
 from discord_slash.utils.manage_commands import create_option
 from googlesearch import search
-import json
+import praw
+import random
 import python_weather
+import time
 
 client = discord.Client()
 slash = SlashCommand(client, sync_commands=True)
+reddit = praw.Reddit(client_id='',
+                     client_secret='',
+                     user_agent='Mozilla/5.0 (X11; Fedora; Linux x86_64; rv:94.0) Gecko/20100101 Firefox/94.0')
 
 @client.event
 async def on_ready():
@@ -43,4 +48,17 @@ async def _weather(ctx, city:str):
 #        embed.add_field(name=forecast.date, value=f'{forecast.sky_text}, {forecast.temperature}', inline=True)
     await ctx.send(content=None, embed=embed)
     await weather_client.close()
+
+@slash.slash(name="Meme", description="Gets random memes from reddit!", guild_ids=guild_ids)
+async def _meme(ctx):
+    await ctx.defer()
+    #time.sleep(2)
+    memes_posts = reddit.subreddit('memes').hot()
+    post_to_pick=random.randint(1, 100)
+    for i in range(0, post_to_pick):
+        submission = next(x for x in memes_posts if not x.stickied)
+    embed=discord.Embed(title=submission.title, url=submission.url)
+    #print(submission.url)
+    embed.set_image(url=submission.url)
+    await ctx.send(embed=embed)
 client.run("")
