@@ -4,7 +4,7 @@ from discord_slash.utils.manage_commands import create_option
 from googlesearch import search
 import praw
 import random
-import python_weather
+import unsplash_module
 import time
 
 client = discord.Client()
@@ -37,17 +37,9 @@ async def _google(ctx, query:str):
                 embed.add_field(name="Result", value=j, inline=False)
         await ctx.send(content=None, embed=embed)
 
-@slash.slash(name="Weather", description="checks weather in your city!", options=[create_option(name="city", description="City name", option_type=3, required=True)], guild_ids=guild_ids)
-async def _weather(ctx, city:str):
-    embed = discord.Embed(title=f"Weather for {city}", color=discord.Color.green())
-    weather_client = python_weather.Client()
-    weather = await weather_client.find(city)
-    embed.add_field(name="Temperature", value=f'{weather.current.temperature}°C, {weather.current.sky_text}\n Humidity = {weather.current.humidity}%', inline=False)
+
     
-#    for forecast in weather.forecasts:
-#        embed.add_field(name=forecast.date, value=f'{forecast.sky_text}, {forecast.temperature}', inline=True)
-    await ctx.send(content=None, embed=embed)
-    await weather_client.close()
+
 
 @slash.slash(name="Meme", description="Gets random memes from reddit!", guild_ids=guild_ids)
 async def _meme(ctx):
@@ -60,5 +52,14 @@ async def _meme(ctx):
     embed=discord.Embed(title=submission.title, url=submission.url)
     #print(submission.url)
     embed.set_image(url=submission.url)
+    await ctx.send(embed=embed)
+
+@slash.slash(name="Wallpaper", description="Gets random images from unsplash!", guild_ids=guild_ids)
+async def _wallpaper(ctx):
+    await ctx.defer() 
+    link = unsplash_module.UnsplashClass()
+    link = link.url
+    embed = discord.Embed(title="Wallpaper", color=discord.Color.random())
+    embed.set_image(url=link)
     await ctx.send(embed=embed)
 client.run("")
