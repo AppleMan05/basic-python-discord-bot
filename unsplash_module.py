@@ -4,6 +4,7 @@ import requests
 #print(pics["urls"]["raw"])
 
 class UnsplashClass:
-    
-        pics = requests.get('https://api.unsplash.com/photos/random?client_id=').json()
+        def __init__(self):
+                self.pics = requests.get('https://api.unsplash.com/photos/random?client_id=').json()
         url = pics["urls"]["raw"]
+    
