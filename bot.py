@@ -1,23 +1,56 @@
 import discord
 from discord_slash import SlashCommand
 from discord_slash.utils.manage_commands import create_option
+from discord.ext import tasks
 from googlesearch import search
 import praw
 import random
 import unsplash_module
 import time
-
+from rss_feeds_module import get_posts_details
+from itertools import cycle
+import datetime
 client = discord.Client()
 slash = SlashCommand(client, sync_commands=True)
 reddit = praw.Reddit(client_id='',
                      client_secret='',
                      user_agent='Mozilla/5.0 (X11; Fedora; Linux x86_64; rv:94.0) Gecko/20100101 Firefox/94.0')
 
+tech_feed_url = cycle(['https://www.theverge.com/rss/index.xml', 'https://www.androidauthority.com/feed/', 'https://www.cnet.com/rss/all/', 'http://rss.nytimes.com/services/xml/rss/nyt/Technology.xml', 'https://appleinsider.com/rss/news/'])
+general_feed_url= cycle(['http://feeds.bbci.co.uk/news/world/rss.xml', 'https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/section/world/rss.xml', 'https://timesofindia.indiatimes.com/rssfeeds/296589292.cms', 'https://screenrant.com/feed/'])
+general_sent_list=[]
+tech_sent_list=[]
+
 @client.event
 async def on_ready():
     print("Bot is up")
+    check_feeds.start()
 
 guild_ids = [706385454500413470]
+
+@tasks.loop(seconds=1)
+async def check_feeds():
+    if datetime.datetime.now().hour >= 20:
+        link = get_posts_details(next(tech_feed_url))
+        link = link[0][0]["link"]
+        link2 = get_posts_details(next(general_feed_url))
+        link2 = link2[0][0]["link"]
+        #print(link)
+        if link not in tech_sent_list:
+            tech_sent_list.append(link)
+            channel = client.get_channel(845180307945685012)
+            await channel.send(link)
+        if link2 not in general_sent_list:
+            general_sent_list.append(link2)
+            channel = client.get_channel(845180307945685012)
+            await channel.send(link2)
+        else:
+            time.sleep(60)
+            pass
+    else:
+        time.sleep(60)
+        pass
+        
 
 @slash.slash(name="ping", description="Check the bot's latency.", guild_ids=guild_ids)
 async def _ping(ctx):
